@@ -9,15 +9,18 @@ import cv2
 import numpy as np 
 from flask_cors import CORS
 
+async_mode = None
 
 app = Flask(__name__)
 CORS(app)
-socketio = SocketIO(app)
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app, async_mode=async_mode,cors_allowed_origins="*")
+# socketio = SocketIO(app)
 
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    return render_template('index.html')
+    return render_template('index.html',async_mode=socketio.async_mode,cors_allowed_origins="*")
 
 @socketio.on('image')
 def image(data_image):
@@ -57,8 +60,7 @@ def image(data_image):
     stringData = b64_src + stringData
 
     # emit the frame back
-    print("tiru")
     emit('response_back', stringData)
 
 if __name__ == '__main__':
-    socketio.run(app,debug=True,host="localhost")
+    socketio.run(app,debug=False,host="localhost")
