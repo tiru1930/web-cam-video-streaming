@@ -7,9 +7,11 @@ from PIL import Image
 import imutils
 import cv2
 import numpy as np 
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+CORS(app)
 socketio = SocketIO(app)
 
 
@@ -55,6 +57,7 @@ def image(data_image):
     stringData = b64_src + stringData
 
     # emit the frame back
+    print("tiru")
     emit('response_back', stringData)
 
 if __name__ == '__main__':
